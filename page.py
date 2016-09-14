@@ -1,17 +1,15 @@
+import json
+
 
 class Page(object):
+    command_id = 200
 
-    def __init__(self, _id, url, wsapp, fetch_content=False):
-        # '''
-        # TODO:
-        # Initialize the object. 
-        # url - the websocket url
-        # target_url - the url to navigate to
-        # '''
+    def __init__(self, _id, url, ws, fetch_content=False):
         self.id = _id
         self.url = url
-        # self.chrome = chrome
+        self.ws = ws
         self.fetch_content = fetch_content
+
         self.failed = False
         self.original_request_id = None
         self.original_request_ms = None
@@ -28,9 +26,16 @@ class Page(object):
             and self.dom_content_event_fired_ms is not None \
             and self.load_event_fired_ms is not None)
 
-    # @property
-    # def failed(self):
-    #     return self.failed
+    @property
+    def next_command_id(self):
+        self.command_id +=1
+        return self.command_id
+
+    # Not async
+    def call_command(self, method, params={}, callback=None):
+        msg = {'id': self.next_command_id, 'method': method, 'params': params}
+        res = self.ws.sock.send(json.dumps(msg))
+        return json.loads(self.ws.sock.recv())
 
     def process_message(self, message):
         # print "## on process_message", message, type(message)
@@ -71,6 +76,15 @@ class Page(object):
                     # // performed to really ensure that the fetching is over
                     # // before finishing this page processing because there is
                     # // the PAGE_DELAY timeout anyway; it should not be a problem...)
+
+                    # if self.fetch_content:
+                    #     # import pdb; pdb.set_trace()
+                    #     params = {'requestId': request_id}
+                    #     response = self.call_command(method='Network.getResponseBody', params=params)
+                    #     # print "#### HWRE", response
+                    #     self.objects[request_id]['responseBody'] = response['body']
+                    #     self.objects[request_id]['responseBodyIsBase64'] = response['base64Encoded']
+
                     # if (self.fetchContent) {
                     #     self.chrome.Network.getResponseBody({'requestId': id}, function (error, response) {
                     #         if (!error) {

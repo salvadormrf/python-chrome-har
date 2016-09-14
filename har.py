@@ -64,38 +64,6 @@ class HAR(object):
 
             # // query string
             query_string = convert_querystring(obj['requestMessage']['request']['url'])
-            
-            # # // object timings
-            # # // - timing.requestTime: seconds
-            # # // - timing.*Start/End: milliseconds from the above
-            # timing = obj['responseMessage']['response']['timing']
-            # print timing
-
-            # if not timing.get('requestInMs', False):
-            #     timing['requestTime'] *= 1000 # // to ms
-            #     timing['requestInMs'] = True
-
-            # duration = obj['responseFinished'] - timing['requestTime']
-            # blocked_time = first_non_negative([timing['dnsStart'], timing['connectStart'], timing['sendStart']])
-
-            # dns_time = -1
-            # if dns_time >= 0:
-            #     dnsTime = first_non_negative([timing['connectStart'], timing['sendStart']]) - timing['dnsStart']
-
-            # connect_time = -1
-            # if connect_time >= 0:
-            #     connect_time = timing['sendStart'] - timing['connectStart']
-
-            # send_time = timing['sendEnd'] - timing['sendStart']
-            # wait_time = timing['receiveHeadersEnd'] - timing['sendEnd']
-            # receive_time = to_milliseconds(duration) - timing['receiveHeadersEnd']
-
-            # ssl_time = -1
-            # if timing['sslStart'] >= 0 and timing['sslEnd'] >= 0:
-            #     ssl_time = timing['sslEnd'] - timing['sslStart']
-
-
-            ##### OTHER approach!!!
 
             # // skip entries with no timing information (it's optional)
             timing = obj['responseMessage']['response']['timing']
@@ -122,17 +90,15 @@ class HAR(object):
             send = send_time
             wait = wait_time
             receive = receive_time
-            blocked = blocked_time; # // TODO
+            blocked = blocked_time  # // TODO
 
             total_time = dns + connect + ssl + send + wait + receive
-
-
 
             # // connection information
             server_ip_address = obj['responseMessage']['response']['remoteIPAddress']
             connection = obj['responseMessage']['response']['connectionId']
 
-            # # // sizes
+            ## // sizes
             compression = obj['responseLength'] - obj['encodedResponseLength']
 
             # // fill entry
@@ -154,7 +120,7 @@ class HAR(object):
                     'status': obj['responseMessage']['response']['status'],
                     'statusText': obj['responseMessage']['response']['statusText'],
                     'httpVersion': protocol,
-                    'cookies': [], # // TODO
+                    'cookies': [],  # // TODO
                     'headers': response_headers['pairs'],
                     'redirectURL': redirect_url,
                     'headersSize': response_headers['size'],
@@ -165,7 +131,7 @@ class HAR(object):
                         'mimeType': obj['responseMessage']['response']['mimeType'],
                         'compression': compression,
                         'text': obj.get('responseBody', None) or '',
-                        'encoding': '', # TODO: 'encoding': object.responseBodyIsBase64 ? 'base64' : undefined,
+                        'encoding': '',  # TODO: 'encoding': object.responseBodyIsBase64 ? 'base64' : undefined,
                     }
                 },
                 'cache': {},
@@ -194,13 +160,10 @@ class HAR(object):
         }]
 
 
-
-
 def time_delta(start, end):
     if start != -1 and end != -1:
         return end - start
     return 0
-
 
 
 def first_non_negative(values):
@@ -220,13 +183,11 @@ def convert_querystring(full_url):
     return [{'name': k, 'value': ','.join(v)} for k, v in dikt.iteritems()]
 
 
-
 def convert_headers(headers):
     headers_obj = {'pairs': [], 'size': None}
     if headers:
-        headers_obj['size'] = 2 # // trailing "\r\n"
+        headers_obj['size'] = 2  # // trailing "\r\n"
         for name, value in headers.iteritems():
             headers_obj['pairs'].append({'name': name, 'value': value})
-            headers_obj['size'] += (len(name) + len(value) + 4)  #// ": " + "\r\n"
+            headers_obj['size'] += (len(name) + len(value) + 4)  # // ": " + "\r\n"
     return headers_obj
-

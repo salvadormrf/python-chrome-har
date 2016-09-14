@@ -2,3 +2,7 @@ requests==2.11.1
 simplejson==3.8.2
 six==1.10.0
 websocket-client==0.37.0
+
+
+# from bs4 import BeautifulSoup
+# from slugify import slugify
