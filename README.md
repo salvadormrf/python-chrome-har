@@ -1,4 +1,4 @@
-### WORK IN PROGRESS  
+### POC - Use as reference
 
 ### Extract HAR files using Chrome  
 
@@ -14,7 +14,7 @@ pip install -r requirements.txt
 /Applications/Chromium.app/Contents/MacOS/Chromium --remote-debugging-port=9222  --enable-benchmarking --enable-net-benchmarking
 
 # Run HAR collector
-python client.pt
+python client.py
 
 # Open file /tmp/test.har with http://www.softwareishard.com/har/viewer/
 # Have fun
