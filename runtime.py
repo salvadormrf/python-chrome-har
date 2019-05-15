@@ -15,7 +15,7 @@ class Runtime(object):
 
     def enable_runtime(self):
         self.call_command(method='Runtime.enable')
-        print 'Enabled Runtime.'
+        print('Enabled Runtime.')
 
     # def evaluate(self, expression):
     #     params = {"expression": expression}
