@@ -1,4 +1,5 @@
-import urlparse
+from urllib.parse import urlparse
+import urllib.parse
 import datetime
 
 
@@ -28,7 +29,7 @@ class HAR(object):
         on_load = page.load_event_fired_ms - page.original_request_ms
 
         # // entries
-        for request_id, obj in page.objects.iteritems():
+        for request_id, obj in page.objects.items():
             # // skip incomplete entries, those that have no timing information (since
             # // it's optional) or data URI requests
             if obj['responseMessage'] is None \
@@ -178,16 +179,16 @@ def to_milliseconds(time):
 
 
 def convert_querystring(full_url):
-    r = urlparse.urlparse(full_url)
-    dikt = urlparse.parse_qs(r.query, keep_blank_values=True)
-    return [{'name': k, 'value': ','.join(v)} for k, v in dikt.iteritems()]
+    r = urlparse(full_url)
+    dikt = urllib.parse.parse_qs(r.query, keep_blank_values=True)
+    return [{'name': k, 'value': ','.join(v)} for k, v in dikt.items()]
 
 
 def convert_headers(headers):
     headers_obj = {'pairs': [], 'size': None}
     if headers:
         headers_obj['size'] = 2  # // trailing "\r\n"
-        for name, value in headers.iteritems():
+        for name, value in headers.items():
             headers_obj['pairs'].append({'name': name, 'value': value})
             headers_obj['size'] += (len(name) + len(value) + 4)  # // ": " + "\r\n"
     return headers_obj

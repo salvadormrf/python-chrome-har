@@ -15,7 +15,7 @@ class DOM(object):
 
     def enable_dom(self):
         self.call_command(method='DOM.enable')
-        print 'Enabled DOM'
+        print('Enabled DOM')
 
     def query_selector(self, selector):
         doc = self.call_command(method='DOM.getDocument')

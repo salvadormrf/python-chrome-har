@@ -49,18 +49,18 @@ class ChromeRDPWebsocket(object):
                 self.close_connection()
 
     def on_error(self, ws, error):
-        print error
+        print(error)
 
     def on_close(self, ws):
-        print 'Socket for {0} is closed.'.format(self.debugging_url)
+       print('Socket for {0} is closed.'.format(self.debugging_url))
 
     def on_open(self, ws):
         self.navigate_to_page('about:blank')
         self.enable_network_tracking()
         self.enable_page_tracking()
-        # self.enable_runtime()
-        # self.enable_dom()
-        # self.clear_cache()
+        #self.enable_runtime()
+        #self.enable_dom()
+        self.clear_cache()
 
         # if self.user_agent is not None:
         #     navigation_utils.set_user_agent(self.ws, self.user_agent)
@@ -68,7 +68,7 @@ class ChromeRDPWebsocket(object):
         # if self.screen_size_config is not None:
         #     navigation_utils.set_device_screen_size(self.ws, self.screen_size_config, self.device_configuration['page_id'])
 
-        # self.enable_trace_collection(self.ws)
+        self.enable_trace_collection()
         # print 'navigating to url: ' + str(self.url)
         # if self.should_reload:
         #     navigation_utils.reload_page(self.ws)
@@ -80,49 +80,49 @@ class ChromeRDPWebsocket(object):
 
     def close_connection(self):
         self.ws.close()
-        print 'Connection closed'
+        print('Connection closed')
 
     def clear_cache(self):
         self.enqueue_command(method='Network.clearBrowserCache')
-        print 'Cleared browser cache'
+        print('Cleared browser cache')
 
     def can_clear_cache(self):
         self.enqueue_command(method='Network.canClearBrowserCache')
-        print 'Cleared browser cache'
+        print('Cleared browser cache')
 
     def disable_network_tracking(self):
         self.enqueue_command(method='Network.disable')
-        print 'Disable network tracking.'
+        print('Disable network tracking.')
 
     def disable_page_tracking(self):
         self.enqueue_command(method='Page.disable')
-        print 'Disable page tracking.'
+        print('Disable page tracking.')
 
     def enable_network_tracking(self):
         self.enqueue_command(method='Network.enable')
-        print 'Enabled network tracking.'
+        print('Enabled network tracking.')
 
         self.enqueue_command(method='Network.setCacheDisabled', params={"cacheDisabled": True})
-        print 'Disable debugging connection.'
+        print('Disable debugging connection.')
 
     def enable_page_tracking(self):
         self.enqueue_command(method='Page.enable')
-        print 'Enabled page tracking.'
+        print('Enabled page tracking.')
 
     def enable_trace_collection(self):
         self.enqueue_command(method='Tracing.start')
-        print 'Enabled trace collection'
+        print('Enabled trace collection')
 
     def stop_trace_collection(self):
         self.enqueue_command(method='Tracing.end')
-        print 'Disables trace collection'
+        print('Disables trace collection')
 
     def get_debugging_url(self):
         return self.debugging_url
 
     def navigate_to_page(self, url):
         self.enqueue_command(method='Page.navigate', params={"url": url})
-        print 'Navigating to url:', url
+        print('Navigating to url:', url)
 
     @property
     def next_command_id(self):
@@ -178,7 +178,8 @@ if __name__ == '__main__':
 
     html_doc = res['result']['outerHTML']
 
-    print html_doc
+    with open("Output.html", "w") as text_file:
+      text_file.write(html_doc)
 
     #################### MULTI ####################
 
