@@ -1,4 +1,4 @@
-requests==2.11.1
+requests==2.31.0
 simplejson==3.8.2
 six==1.10.0
 websocket-client==0.37.0
